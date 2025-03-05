@@ -1,7 +1,6 @@
 import numpy as np
 import os
-from picamera2 import Picamera2, Preview
-from time import sleep
+from picamera2 import Picamera2
 
 class Robot:
     def __init__(self, masterplan):
@@ -46,12 +45,12 @@ class Robot:
 
     # Funktion for taking an image (not sure if it works)
     def TakeImage(self, filename = "image.jpg"):
-        # File path for stopping the camera stream (don't remember the full path)
-        os.system("cd ~svn/robobot/")
-        # Kill the stream (don't remember the filename)
-        os.system("pkill streamserver")
-        # Take an image from the camera (don't remember the exact command)
-        os.system(f"rasp_still -o {filename}")
+        # Kill the stream
+        os.system("pkill stream_server")
+        # Take an image from the camera
+        os.system(f"libcamera-still -o \"{filename}\"")
+        # Restore the stream
+        os.system("python3 svn/robobot/stream_server/stream_server.py")
 
     # Function for controlling the gripper
     def GripperAction(self):
