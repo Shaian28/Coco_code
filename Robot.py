@@ -1,5 +1,5 @@
 import numpy as np
-import os
+import subprocess
 from picamera2 import Picamera2
 
 class Robot:
@@ -42,15 +42,13 @@ class Robot:
         self.Dimension.Height = 0
         # The length of the gripper
         self.Dimension.GripLength = 0
+        # The height of the camera
+        self.Dimension.CameraHeight = 0
 
     # Funktion for taking an image (not sure if it works)
     def TakeImage(self, filename = "image.jpg"):
-        # Kill the stream
-        os.system("pkill stream_server")
-        # Take an image from the camera
-        os.system(f"libcamera-still -o \"{filename}\"")
-        # Restore the stream
-        os.system("python3 svn/robobot/stream_server/stream_server.py")
+        # Run the bash script for capturing images in a new terminal (haven't tested it yet)
+        subprocess.run(["gnome-terminal", "--", "bash", "-c", f"./captureImage.sh {filename}; exec bash"])
 
     # Function for controlling the gripper
     def GripperAction(self):
