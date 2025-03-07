@@ -3,7 +3,7 @@ import subprocess
 from picamera2 import Picamera2
 
 class Robot:
-    def __init__(self):
+    def __init__(self, masterplan):
         # Name of the robot
         self.Name = "Coco"
         # The language the robot has to learn provided by Duolingo
@@ -12,6 +12,8 @@ class Robot:
         self.Position = (0, 0, 0, 0)
         # Number of balls stored
         self.Stored = 0
+        # Giving the arguments to Task subclass
+        self.Task = self.Task(masterplan)
     
     class Task:
         def __init__(self, masterplan):
@@ -57,7 +59,8 @@ class Robot:
     # Funktion for taking an image
     def TakeImage(self, filename = "image.jpg"):
         # Run the bash script for capturing images in a new terminal
-        subprocess.run(["tmux", "new-session", "-d", "bash", "-c", f"./captureImage.sh {filename}; exec bash"])
+        subprocess.run(["./captureImage.sh", filename])
+        #subprocess.run(["tmux", "new-session", "-d", "bash", "-c", f"./captureImage.sh {filename}; exec bash"])
 
     # Function for controlling the gripper
     def GripperAction(self):
