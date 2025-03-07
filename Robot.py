@@ -60,8 +60,7 @@ class Robot:
     def TakeImage(self, filename = "image.jpg"):
         # Run the bash script for capturing images in a new terminal
         subprocess.run(["./captureImage.sh", filename])
-        #subprocess.run(["tmux", "new-session", "-d", "bash", "-c", f"./captureImage.sh {filename}; exec bash"])
-
+        
     # Function for controlling the gripper
     def GripperAction(self):
         # Write a function for the gripper
