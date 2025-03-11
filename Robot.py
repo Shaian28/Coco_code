@@ -1,5 +1,7 @@
+# Library
 import numpy as np
 import subprocess
+import os
 from picamera2 import Picamera2
 
 class Robot:
@@ -31,35 +33,41 @@ class Robot:
     class Camera:
         def __init__(self):
             # Import the camera class
-            self.Camera.Picam = Picamera2()
-            # Camera Calibration matrix
-            self.Camera.InternMat = np.array([[2.5730e+3, 0, 1.6043e+3],
-                                            [0, 2.5786e+3, 1.1901e+3],
-                                            [0, 0, 1]])
-            self.Camera.ExternMat = np.array([[0, 0, 0, 0],
-                                            [0, 0, 0, 0],
-                                            [0, 0, 0, 0],
-                                            [0, 0, 0, 0]])
+            self.Picam = Picamera2()
+            # Calibration parameters
+            self.FocalLengthX = 2.5730e+3
+            self.FocalLengthY = 2.5786e+3
+            self.CenterX = 1.6043e+3
+            self.CenterY = 1.1901e+3
+            # Internal (Camera Calibration) matrix
+            self.InternMat = np.array([[self.FocalLengthX, 0, self.CenterX],
+                                       [0, self.FocalLengthY, self.CenterY],
+                                       [0, 0, 1]])
+            # External matrix
+            self.ExternMat = np.array([[0, 0, 0, 0],
+                                       [0, 0, 0, 0],
+                                       [0, 0, 0, 0],
+                                       [0, 0, 0, 0]])
             # How much the camera is tilted downward
-            self.Camera.Tilt = 0
+            self.Tilt = 11 * np.pi / 180
+        
+        # Funtion for taking an image
+        def TakeImage(self, filename = "image.jpg"):
+            # Run the bash script for capturing images in the background
+            subprocess.Popen(f"nohup ./captureImage.sh {filename} > /dev/null 2>&1 &", shell=True)
 
     class Dimension:
         def __init__(self):
             # The length of the robot
-            self.Dimension.Length = 0
+            self.Length = 0
             # The width of the robot
-            self.Dimension.Width = 0
+            self.Width = 0
             # The heigth of the robot
-            self.Dimension.Height = 0
+            self.Height = 0
             # The length of the gripper
-            self.Dimension.GripLength = 0
+            self.GripLength = 0
             # The height of the camera
-            self.Dimension.CameraHeight = 0
-
-    # Funktion for taking an image
-    def TakeImage(self, filename = "image.jpg"):
-        # Run the bash script for capturing images in a new terminal
-        subprocess.run(["./captureImage.sh", filename])
+            self.CameraHeight = 0
         
     # Function for controlling the gripper
     def GripperAction(self):
