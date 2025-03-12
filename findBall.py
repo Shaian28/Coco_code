@@ -1,6 +1,7 @@
 # Library
 import numpy as np
 import cv2 as cv
+from Robot import Robot
 
 # Ball detection function
 def findBall(path, show = False):
@@ -32,7 +33,7 @@ def findBall(path, show = False):
 
     # Converting to HSV color space
     im_HSV = cv.cvtColor(im_RGB, cv.COLOR_BGR2HSV)
-    cirColor = []
+    detectCircle = []
 
     # Finding out the color of each detected circles
     for val in circles[0]:
@@ -43,22 +44,22 @@ def findBall(path, show = False):
 
         # Color argument with 1 for red ball, 2 for white ball and 3 for blue ball
         if (H_ch >= 160 or H_ch <= 7) and (S_ch >= 53 and S_ch <= 255) and (V_ch >= 0 and V_ch <= 255):
-            cirColor.append(np.array([val[1], val[0], val[2], 1]))
+            detectCircle.append(np.array([val[0], val[1], val[2], 1]))
         elif (H_ch >= 0 and H_ch <= 179) and (S_ch >= 0 and S_ch <= 50) and (V_ch >= 92 and V_ch <= 255):
-            cirColor.append(np.array([val[1], val[0], val[2], 2]))
+            detectCircle.append(np.array([val[0], val[1], val[2], 2]))
         elif (H_ch >= 92 and H_ch <= 127) and (S_ch >= 53 and S_ch <= 255) and (V_ch >= 0 and V_ch <= 255):
-            cirColor.append(np.array([val[1], val[0], val[2], 3]))
+            detectCircle.append(np.array([val[0], val[1], val[2], 3]))
         else:
             continue
-    cirColor = np.array(cirColor)
+    detectCircle = np.array(detectCircle)
     
     # Show the image
     if show == True:
         # Place the circles in the RGB image
-        for val in cirColor:
-            cv.circle(im_RGB, (val[1], val[0]), val[2],
+        for val in detectCircle:
+            cv.circle(im_RGB, (val[0], val[1]), val[2],
                       (255, 0, 0) if val[3] == 3 else (255, 255, 255) if val[3] == 2 else (0, 0, 255), 2)
-            cv.circle(im_RGB, (val[1], val[0]), 2, (0, 0, 255), 3)
+            cv.circle(im_RGB, (val[0], val[1]), 2, (0, 0, 255), 3)
         
         # Show the RGB image with detected circles
         cv.imshow('Detected circles', im_RGB)
@@ -66,7 +67,37 @@ def findBall(path, show = False):
         cv.destroyAllWindows()
 
     # Returning the circles
-    return cirColor
+    return detectCircle
 
-imagePath = "C:/Users/shaia/Pictures/COCO images/image_data/image48.png"
-color = findBall(imagePath, True)
+# Finding the 3D coordinate of the balls
+def place3D(circles, robotClass):
+    # The pixel, camera and world coordinates initialisation
+    pixelPlace = np.array([circles[:, 0], circles[:, 1], np.ones(circles[:, 0].shape)])
+    cameraPlace = np.ones((4, pixelPlace.shape[1]))
+    worldPlace = np.ones((4, pixelPlace.shape[1]))
+
+    # Looping through all the points
+    for idx, point in enumerate(np.transpose(pixelPlace)):
+        # Depth information of the detected balls
+        depth = 1                                           # Find a way to calculate it
+
+        # Calculation of the camera coordinates
+        cameraPlace[0:-1, idx] = np.dot(np.linalg.inv(robotClass.Camera.InternMat), point) * depth
+        #cameraPlace[[0, 2], idx] = cameraPlace[[2, 0], idx]            # The coordinates axes was switched in the old assignment
+        #cameraPlace[3, idx] = -cameraPlace[3, idx]                     # Have to test the coordinate axis in real-time
+
+        # Calculation of the world coordinates
+        worldPlace[:, idx] = np.dot(robotClass.Camera.ExternMat, cameraPlace[:, idx])
+        worldPlace[:, idx] = worldPlace[:, idx] / worldPlace[-1, idx]
+    
+    # Return world coordinates
+    return worldPlace
+
+# Debugging
+if __name__ == "__main__":
+    taskList = ["Golf balls", "Ball sorting"]
+    robot = Robot(taskList)
+    imagePath = "C:/Users/shaia/Pictures/COCO images/image_data/"
+    imageFile = ["image12.png", "image13.png", "image14.png", "image46.png", "image47.png", "image48.png"]
+    color = findBall(imagePath + imageFile[4])
+    place3D(color, robot)
