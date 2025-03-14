@@ -1,7 +1,12 @@
 # Library
 import numpy as np
 import subprocess
-from picamera2 import Picamera2
+try:
+    from picamera2 import Picamera2
+    Picamera2Found = True
+except:
+    print("Picamera2 was not imported")
+    Picamera2Found = False
 
 class Robot:
     def __init__(self, masterplan):
@@ -35,7 +40,8 @@ class Task:
 class Camera:
     def __init__(self):
         # Import the camera class
-        self.Picam = Picamera2()
+        if Picamera2Found:
+            self.Picam = Picamera2()
         # Calibration parameters
         self.FocalLengthX = 2.5730e+3
         self.FocalLengthY = 2.5786e+3

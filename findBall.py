@@ -99,5 +99,5 @@ if __name__ == "__main__":
     robot = Robot(taskList)
     imagePath = "C:/Users/shaia/Pictures/COCO images/image_data/"
     imageFile = ["image12.png", "image13.png", "image14.png", "image46.png", "image47.png", "image48.png"]
-    color = findBall(imagePath + imageFile[4])
+    color = findBall(imagePath + imageFile[5], True)
     place3D(color, robot)
