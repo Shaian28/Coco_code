@@ -29,7 +29,12 @@ def findBall(path, show = False):
     # Finding the circles in the image
     circles = cv.HoughCircles(im_gray, cv.HOUGH_GRADIENT_ALT, 1, 15, param1 = 50, param2 = 0.8,
                               minRadius = 0, maxRadius = 45)
-    circles = np.uint16(np.around(circles))
+    try:
+        circles = np.uint16(np.around(circles))
+    # If no circles were found
+    except:
+        print("No circles were detected")
+        return 0
 
     # Converting to HSV color space
     im_HSV = cv.cvtColor(im_RGB, cv.COLOR_BGR2HSV)
@@ -99,5 +104,5 @@ if __name__ == "__main__":
     robot = Robot(taskList)
     imagePath = "C:/Users/shaia/Pictures/COCO images/image_data/"
     imageFile = ["image12.png", "image13.png", "image14.png", "image46.png", "image47.png", "image48.png"]
-    color = findBall(imagePath + imageFile[5], True)
-    place3D(color, robot)
+    color = findBall(imagePath + imageFile[4])
+    print(place3D(color, robot))

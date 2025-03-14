@@ -9,14 +9,14 @@ The connection is done by SSH. Normally the PuTTY terminal is used to for SSH, b
 2. Install the extension Remote - SHH from Microsoft.
 3. Click on the lower left blue icon icon, which looks like two triangles pointing at each other.
 4. Click on "Connect to Host..." and thereafter "+Add New SSH Host..."
-5. Write "local@10.197.217.198", hit enter and click on "<filepath>\.ssh\config"
+5. Write "local@10.197.219.198", hit enter and click on "<filepath>\.ssh\config"
 
 ### Open the connection
 1. Click on the lower left blue icon icon, which looks like two triangles pointing at each other.
-2. Click on "Connect to Host..." and thereafter "10.197.217.198".
+2. Click on "Connect to Host..." and thereafter "10.197.219.198".
 3. A new window opens up and if this is the first time, and choose "Linux".
 4. Write the code as "grenen".
 5. Open the terminal in "Terminal" and then "New Terminal"
 
 ## Open the PI camera
-The camera is setup while booting up. The PI camera can be accessed on the browser (not Bowser) by going to "10.197.217.198:7123". If that doesn't work, then you should cry in the corner of the room and reflect how you can't do something as simple as accessing a link.
+The camera is setup while booting up. The PI camera can be accessed on the browser (not Bowser) by going to "10.197.219.198:7123". If that doesn't work, then you should cry in the corner of the room and reflect how you can't do something as simple as accessing a link.
